@@ -1,2 +1,3 @@
 # language-vamp
-Syntax Highlighting Package for Atom
+
+VAMP language syntax highlighting
