@@ -1,4 +1,5 @@
 
+
 'scopeName' : 'source.vamp'
 'name'      : 'Vamp'
 
@@ -8,6 +9,7 @@
   'va'
   'vam'
   'vamp'
+  'vmp'
 ]
 
 
@@ -51,7 +53,7 @@
    }
 
    {
-    'match': '\\b(Void|Spin|Nume|Data|List|Node|Fail|Time|Emit|Bios|NoneVoid|PosiSpin|IffySpin|NegaSpin|BareNume|IntgNume|FracNume|UnitNume|BareData|SpinData|NumeData|TextData|ListData|NodeData|HardData|BiosData|BareList|FlatList|TreeList|BareNode|FlatNode|TreeNode|FuncNode|BiosNode|NumeTime|DateTime|EmitTime)\\b'
+    'match': '\\b(Void|Spin|Nume|List|Node|Fail|Time|Emit|Bios|NoneVoid|PosiSpin|IffySpin|NegaSpin|BareNume|IntgNume|FracNume|UnitNume|BareData|SpinData|NumeData|TextData|ListData|NodeData|HardData|BiosData|BareList|FlatList|TreeList|BareNode|FlatNode|TreeNode|FuncNode|BiosNode|NumeTime|DateTime|EmitTime)\\b'
     'name': 'keyword.control.js'
    }
 
@@ -66,7 +68,7 @@
    }
 
    {
-     'match': '(#)[A-Za-z0-9\\\\_\\.:]+'
+     'match': '(#)[A-Za-z0-9\\\\_\\.:/]+'
      'name': 'keyword.control.js'
    }
 
@@ -81,17 +83,30 @@
    }
 
    {
-    'match': '([A-Z])[a-zA-Z]+'
+    'match': '\\b([A-Z])[a-z]+\\b'
     'name': 'support.class.js'
    }
 
+   {
+    'match': '\\b([A-Z])+\\b'
+    'name': 'constant.language.js'
+   }
+
+   {
+     'begin': '#\\['
+     'captures':
+       '0':
+         'name': 'keyword.control.js'
+     'end': '\\]'
+     'name': 'constant.character.escape.js'
+   }
 ]
 'repository':
   'comments':
     'patterns': [
 
       {
-        'begin': '(//)|(\\\\\\\\)|(\\.:)|(:\\.)|(::)|(#!)|(!#)|(# )|(##)|(\\*\\*\\*)|(```)|(===)|(---)|(\\.\\.\\.)'
+        'begin': '(//)|(\\\\\\\\)|(\\.:)|(:\\.)|(:: )|( ::)|(#!)|(!#)|(# )|(##)|(\\*\\*\\*)|(```)|(:::)|(===)|(---)|(\\.\\.\\.)'
         'captures':
           '0':
             'name': 'punctuation.definition.comment.js'
@@ -100,11 +115,20 @@
       }
 
       {
-        'begin': '(^-- )|(^--\n)'
+        'begin': '(^--)'
         'captures':
           '0':
             'name': 'punctuation.definition.comment.js'
-        'end': '(^-- )|(^--\n)|( --\n)|(::\n)'
+        'end': '(^--)|(^::)'
+        'name': 'comment.block.documentation.js'
+      }
+
+      {
+        'begin': '(^@ )'
+        'captures':
+          '0':
+            'name': 'punctuation.definition.comment.js'
+        'end': '\\n'
         'name': 'comment.block.documentation.js'
       }
 
@@ -116,8 +140,8 @@
         'end': '\\*/'
         'name': 'comment.block.js'
       }
-
     ]
+
 
   'numbers':
     'patterns': [
@@ -128,6 +152,7 @@
       }
 
     ]
+
 
   'strings':
     'patterns': [
@@ -143,12 +168,11 @@
         'name': 'string.quoted.single.js'
         'patterns': [
           {
-            'match': '\\\\(x\\h{2}|[0-2][0-7]{0,2}|3[0-6][0-7]?|37[0-7]?|[4-7][0-7]?|.)'
-            'name': 'constant.character.escape.js'
-          }
-          {
             'match': "[^']*[^\\n\\r'\\\\]$"
             'name': 'invalid.illegal.string.js'
+          }
+          {
+            'include': '#interpolated_js'
           }
         ]
       }
@@ -164,12 +188,11 @@
         'name': 'string.quoted.double.js'
         'patterns': [
           {
-            'match': '\\\\(x\\h{2}|[0-2][0-7]{0,2}|3[0-6][0-7]|37[0-7]?|[4-7][0-7]?|.)'
-            'name': 'constant.character.escape.js'
-          }
-          {
             'match': '[^"]*[^\\n\\r"\\\\]$'
             'name': 'invalid.illegal.string.js'
+          }
+          {
+            'include': '#interpolated_js'
           }
         ]
       }
@@ -185,9 +208,69 @@
         'name': 'string.quoted.template.js'
         'patterns': [
           {
-            'match': '\\\\(x\\h{2}|[0-2][0-7]{0,2}|3[0-6][0-7]?|37[0-7]?|[4-7][0-7]?|.)'
-            'name': 'constant.character.escape.js'
+            'include': '#interpolated_js'
           }
+        ]
+      }
+      {
+        'begin': '\\\\'
+        'beginCaptures':
+          '0':
+            'name': 'string.regexp.js'
+        'end': '\\\\'
+        'endCaptures':
+          '0':
+            'name': 'string.regexp.js'
+        'name': 'string.regexp.js'
+        'patterns': [
+          {
+            'include': '#interpolated_js'
+          }
+        ]
+      }
+      {
+        'begin': '((/)([a-zA-Z0-9_$/\\.\\-]+))|((\\.)(/)([a-zA-Z0-9_$/\\.\\-]+))|((\\.)(\\.)(/)([a-zA-Z0-9_$/\\.\\-]+))'
+        'beginCaptures':
+          '0':
+            'name': 'string.regexp.js'
+        'end': '[:,; \\r\\n\\t\\)\\]\\}]'
+        'endCaptures':
+          '0':
+            'name': 'keyword.operator.$1.js'
+        'name': 'string.regexp.js'
+        'patterns': [
+          {
+            'include': '#interpolated_js'
+          }
+        ]
+      }
+      {
+        'begin': '‷'
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.definition.string.begin.js'
+        'end': '‴'
+        'endCaptures':
+          '0':
+            'name': 'punctuation.definition.string.end.js'
+        'name': 'string.quoted.template.js'
+        'patterns': [
+          {
+            'include': '#interpolated_js'
+          }
+        ]
+      }
+      {
+        'begin': '\\[\\|'
+        'beginCaptures':
+          '0':
+            'name': 'keyword.control.js'
+        'end': '\\|\\]'
+        'endCaptures':
+          '0':
+            'name': 'keyword.control.js'
+        'name': 'comment.block.js'
+        'patterns': [
           {
             'include': '#interpolated_js'
           }
@@ -195,43 +278,36 @@
       }
     ]
 
+
   'interpolated_js':
     'patterns': [
       {
-        'begin': '\\$\\{'
-        'captures':
-          '0':
-            'name': 'punctuation.section.embedded.js'
-        'end': '\\}'
-        'name': 'source.js.embedded.source'
+        'begin': '\\\\'
+        'end': '\\\\'
+        'name': 'constant.character.escape.js'
         'patterns': [
           {
-            'begin': '{'
-            'beginCaptures':
-              '0':
-                'name': 'meta.brace.curly.js'
-            'end': '}'
-            'endCaptures':
-              '0':
-                'name': 'meta.brace.curly.js'
-            'patterns': [
-              {
-                'include': '$self'
-              }
-            ]
+             'match': '[A-F0-9]{4,4}'
+             'name': 'support.constant.js'
           }
           {
-            'include': '$self'
+             'match': '[a-zA-Z_$]{2,}'
+             'name': 'variable.language.js'
           }
-        ]
-      }
+          {
+             'match': '[\+\-\/\*\%\^\?\!\|\<\>\=\~\.\(\)]'
+             'name': 'keyword.control.js'
+          }
+       ]
+     }
     ]
+
 
   'properties':
     'patterns': [
       {
         'comment': '`prop` in `obj.prop`, `func().prop`'
-        'match': '(\\.)\\s*(?:(\\b\\d\\w*)|(IsType|IsKind|Trim)|(Name|Gist|Auth|Lock|Call|Size|Spin|Find|Kind|Type|Tick)|([A-Z][A-Z0-9_$]*\\b\\$*)|([\\w$]*))'
+        'match': '(\\.)\\s*(?:(\\b\\d\\w*)|(IsType|IsKind|Trim)|(Name|Auth|Lock|Call|Size|Spin|Find|Kind|Type|Tick)|([A-Z][A-Z0-9_$]*\\b\\$*)|([\\w$]*))'
         'captures':
           '1':
             'name': 'meta.delimiter.property.period.js'
