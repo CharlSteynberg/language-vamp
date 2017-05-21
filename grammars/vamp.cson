@@ -68,13 +68,13 @@
    }
 
    {
-     'match': '(#)[A-Za-z0-9\\\\_\\.:/]+'
-     'name': 'keyword.control.js'
+      'match': '\\+|-|\\*|/|%|\\^|@|&|!|\\?|>|<|=|~|:'
+      'name': 'keyword.operator.$1.js'
    }
 
    {
-      'match': '\\+|-|\\*|/|%|\\^|@|&|!|\\?|>|<|=|~|:'
-      'name': 'keyword.operator.$1.js'
+     'match': '(#)[A-Za-z0-9\\\\_\\.:/\\-|\\*]+'
+     'name': 'keyword.control.js'
    }
 
    {
@@ -133,11 +133,11 @@
       }
 
       {
-        'begin': '/\\*'
+        'begin': '(/\\*\\*)'
         'captures':
           '0':
             'name': 'punctuation.definition.comment.js'
-        'end': '\\*/'
+        'end': '(\\*\\*/)'
         'name': 'comment.block.js'
       }
     ]
@@ -229,7 +229,7 @@
         ]
       }
       {
-        'begin': '((/)([a-zA-Z0-9_$/\\.\\-]+))|((\\.)(/)([a-zA-Z0-9_$/\\.\\-]+))|((\\.)(\\.)(/)([a-zA-Z0-9_$/\\.\\-]+))'
+        'begin': '(((/)|(\\./)|(\\*\\.)|(\\*/))([a-zA-Z0-9_$/\\.\\-]+))'
         'beginCaptures':
           '0':
             'name': 'string.regexp.js'
@@ -269,7 +269,7 @@
         'endCaptures':
           '0':
             'name': 'keyword.control.js'
-        'name': 'comment.block.js'
+        'name': 'constant.language.js'
         'patterns': [
           {
             'include': '#interpolated_js'
@@ -307,7 +307,7 @@
     'patterns': [
       {
         'comment': '`prop` in `obj.prop`, `func().prop`'
-        'match': '(\\.)\\s*(?:(\\b\\d\\w*)|(IsType|IsKind|Trim)|(Name|Auth|Lock|Call|Size|Spin|Find|Kind|Type|Tick)|([A-Z][A-Z0-9_$]*\\b\\$*)|([\\w$]*))'
+        'match': '(([A-Z0-9_$])(\\.))\\s*(?:(\\b\\d\\w*)|(IsType|IsKind|Trim)|(Name|Auth|Lock|Call|Size|Spin|Find|Kind|Type|Tick)|([A-Z][A-Z0-9_$]*\\b\\$*)|([\\w$]*))'
         'captures':
           '1':
             'name': 'meta.delimiter.property.period.js'
