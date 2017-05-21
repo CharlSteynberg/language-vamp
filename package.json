@@ -60,7 +60,7 @@
     "type": "git",
     "url": "git+https://github.com/CharlSteynberg/language-vamp.git"
   },
-  "version": "0.1.4",
+  "version": "0.1.5",
   "_atomModuleCache": {
     "version": 1,
     "dependencies": [],
